@@ -1,0 +1,1 @@
+declare var Transaction:any;
