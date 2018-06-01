@@ -1431,6 +1431,27 @@ Wallet.SendTransactionData = function($txData, $host, $callback, $callbackDev) {
 
 };
 
+/*
+  send common data by record transaction
+*/
+Wallet.SendRcdTransactionData = function($rcdTxData, $host, $callback, $callbackDev) {
+
+  $.ajax({
+    url: $host.restapi_host + ':' + $host.restapi_port + '/api/v1/custom/transaction/record',
+    type:'post',
+    data: '{"Action":"sendrecord", "Version":"1.0.0", "Type":"","RecordData":{"content":'+ $rcdTxData + '}}',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    success:function (data) {
+      $callback(data);
+    },
+    error:function (error) {
+      $callbackDev(error);
+    }
+  })
+}
+
 Wallet.AjaxGet = function (url, $callback, $catch) {
   // $http({method: 'GET', url: url}).then($callback).catch($catch);
 
