@@ -1,18 +1,65 @@
-<ion-header>
+<ion-header *ngIf="connectBle == 'yes'">
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>检测数据</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Welcome to Ionic!</h2>
-  <p>
-    This starter project comes with simple tabs-based layout for apps
-    that are going to primarily use a Tabbed UI.
-  </p>
-  <p>
-    Take a look at the <code>src/pages/</code> directory to add or change tabs,
-    update any existing page or create new pages.
-  </p>
+<ion-content>
+  <div *ngIf=" connectBle == 'no' " class="disabledBleShowBox">
+      <div class="bleTip">请将<span>蓝牙</span>设置为</div>
+      <div class="bleTip">开启状态</div>
+      <div class="bleAnimation"><div class="iphoneBle"></div></div>
+  </div>
+
+  <div *ngIf="  connectBle == 'scaning' ">
+      <div class="scanTipBox">
+          <div>正在为您搜索周围蓝牙设备</div>
+          <div id="loading">
+            <div id="loading-center">
+              <div id="loading-center-absolute">
+                <div class="object" id="object_one"></div>
+                <div class="object" id="object_two"></div>
+                <div class="object" id="object_three"></div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="sBorderBox">
+        <div class="sBoxL"></div>
+        <div class="sBoxR"></div>
+      </div>
+
+      <div class="scanDeviceBox">
+          <div class="scanDeviceItem" *ngFor="let item of devices" (click)="connectDevice(item.id,item.name)">
+              <div class="deviceName">{{item.name}}</div>
+              <div><span>设备ID：</span>{{item.id}}</div>
+              <div><span>信号强度：</span>{{item.rssi}}</div>
+          </div>
+      </div>
+
+  </div>
+
+  <div *ngIf=" connectBle == 'yes' ">
+    <div class="meatTitle">您所检测的肉类品质优良概率为：</div>
+    <div class="r_out">
+      <div class="r_in">
+        <div class="r_c c3"></div>
+        <div class="r_num">{{meatQuality}}</div>
+      </div>
+    </div>
+
+    <div class="transferDataShow">
+      <div class="dataItemBox">
+        <div class="dataItemBoxValue electric">{{electric}}</div>
+        <div class="dataItemBoxType">导电度</div>
+      </div>
+      <div class="dataItemBox">
+        <div class="dataItemBoxValue ph">{{ph}}</div>
+        <div class="dataItemBoxType">酸碱度</div>
+      </div>
+    </div>
+
+  </div>
+
 </ion-content>
 

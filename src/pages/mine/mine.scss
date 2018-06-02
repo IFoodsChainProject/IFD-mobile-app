@@ -1,0 +1,63 @@
+page-mine {
+  .myAutoShowBox{
+    height: 15rem;
+    background-color: #488aff;
+    padding: 2rem 0 0;
+    color: #fff;
+    padding-top: 5rem;
+    text-align: center;
+  }
+  .myIcon{
+    height: 4rem;
+  }
+  .myIcon img{
+    height: 4rem;
+    width: 4rem;
+    vertical-align: top;
+    border-radius: 100%;
+  }
+  .myName{
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+  .list-ios>.item-block:first-child{
+    border-top:none;
+  }
+  .list>.item-block:last-child{
+    border-bottom:0.55px solid #ddd;
+  }
+  .item-md.item-block .item-inner{
+    padding-right: 32px;
+    background: url("../assets/imgs/tipRight.svg") right 14px center no-repeat;
+    background-size: 14px 14px;
+  }
+  .listIcon{
+    display: inline-block;
+    width: 1.6rem;
+    height: 100%;
+    background-position: center top 3px;
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    margin-right: 1rem;
+  }
+  .wallet{
+    background-image: url("../assets/imgs/wallet.svg");
+  }
+  .listIcon+span{
+    font-size: 1.6rem;
+    color: #4a4a4a;
+    vertical-align: top;
+  }
+  .list-ios .label-ios,.list .label{
+    height: 2rem;
+    padding: 0;
+    margin: 0;
+    line-height: 2rem;
+  }
+  .item-inner{
+    height: 4rem!important;
+    min-height: 4rem;
+  }
+}

@@ -6,7 +6,8 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { NavParams } from 'ionic-angular';
-import { AboutPage} from "../about/about";
+import { ToastController } from 'ionic-angular';
+import { AboutPage } from "../about/about";
 
 @Component({
   selector: 'page-contact',
@@ -24,8 +25,11 @@ export class ContactPage {
   txModify:any;
   walletApp:any;
   txData:any;
+  successInfo:any;
 
-  constructor(public navCtrl: NavController,params: NavParams) {
+
+
+  constructor(public navCtrl: NavController,params: NavParams,public toastCtrl: ToastController) {
 
       this.toAddress = params.get('toAddress');
       this.assetAmount = params.get('assetAmount');
@@ -77,14 +81,25 @@ export class ContactPage {
           /*  var successInfo = $translate.instant('NOTIFIER_TRANSACTION_SUCCESS_TXHASH'); */
           var successInfo = "交易成功, TXID:";
 
-          successInfo = successInfo + that.ab2hexstring(txhash);
+          that.successInfo = successInfo + that.ab2hexstring(txhash);
 
           /*walletApp.successInfoTimerVal = 60;*/ //此行暂时无任何作用
           /*  $scope.notifier.success(successInfo); */
-          console.log(successInfo);
+          console.log(that.successInfo);
+
           if (that.walletApp.txType === '128') {
             that.countDown();
-            that.navCtrl.push(AboutPage);
+
+            let toast = that.toastCtrl.create({
+              message: that.successInfo,
+              duration: 3000,
+              position: 'top'
+            });
+            toast.present();
+
+            setTimeout(function () {
+              that.navCtrl.pop();
+            },3000)
           }
 
         } else {
@@ -93,7 +108,7 @@ export class ContactPage {
         }
 
         that.walletApp.isDisplayAssetId = true;
-        that. walletApp.newAssetId = that.ab2hexstring(txhash);
+        that.walletApp.newAssetId = that.ab2hexstring(txhash);
         if ($transactionType == 0) {
           that.walletApp.registerNewAssetId = that.walletApp.newAssetId;
         } else if ($transactionType == 1) {

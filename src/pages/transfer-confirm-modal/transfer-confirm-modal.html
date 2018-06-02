@@ -1,12 +1,56 @@
 <ion-header>
-
   <ion-navbar>
-    <ion-title>转账</ion-title>
+    <ion-title>
+      转账交易
+    </ion-title>
   </ion-navbar>
-
 </ion-header>
 
+<ion-content>
 
-<ion-content padding>
+  <ion-list>
+
+    <ion-item>
+      <div class="itemTitle">对方地址</div>
+      <div class="itemCont">{{toAddress}}</div>
+    </ion-item>
+    <ion-item>
+      <div class="itemTitle">资产数量</div>
+      <div class="itemCont">{{assetAmount}}</div>
+    </ion-item>
+    <ion-item>
+      <div class="itemTitle">资产名称</div>
+      <div class="itemCont">{{assetName}}</div>
+    </ion-item>
+    <ion-item>
+      <div class="itemTitle">资产编号</div>
+      <div class="itemCont">{{assetNumber}}</div>
+    </ion-item>
+    <ion-item>
+      <div class="itemTitle">我的地址</div>
+      <div class="itemCont">{{myAddress}}</div>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <div class="itemTitle">已连节点</div>
+      <div class="itemCont">{{connectingNodeName}}</div>
+    </ion-item>
+    <ion-item>
+      <div class="itemTitle">服务提供</div>
+      <div class="itemCont">{{hostProvider}}</div>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>您是否确认要发送这笔交易？</ion-item>
+  </ion-list>
+
+  <ion-list class="transferButtons">
+    <button ion-button clear (click)="cancle()">取消</button>
+    <button ion-button color="dark" clear (click)="toTransferCoins()">确定</button>
+  </ion-list>
 
 </ion-content>
+

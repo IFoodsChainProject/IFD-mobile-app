@@ -1,25 +1,41 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      我的钱包
+      wallet
     </ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
+<ion-content>
   <!-- 默认首页 打开钱包 模块 -->
   <div #openWalletBox *ngIf=" openWalletContainer == 'show' ">
-    <button ion-button color="secondary" outline block id="openWalletBtn" (click)="openFileDialog()">打开钱包</button>
-    <input type="file" id="updateFile" (change)="showContentT($event)">
+    <div class="openMyWallet" (click)="openFileDialog()">
+        <div>导入钱包</div>
+        <input type="file" id="updateFile" (change)="showContentT($event)">
+    </div>
 
-    <ion-item *ngIf=" showContentPw == 'show' ">
+    <div class="inputWalletPassContainer" *ngIf=" showContentPw == 'show' ">
+      <div class="walletPassBox">
+          <div class="walletPassTitle"><div>钱包密码</div></div>
+
+          <ion-input type="password" [(ngModel)]="walletPassword" (input)="onFilePassChange()" (porpertychange)="onFilePassChange()" autofocus="autofocus"></ion-input>
+
+          <button ion-button block (click)="decryptWallet()" *ngIf=" unlock == 'show' ">解密</button>
+      </div>
+    </div>
+
+   <!-- <button ion-button color="secondary" outline block id="openWalletBtn" (click)="openFileDialog()">打开钱包</button>-->
+
+
+
+    <!--<ion-item *ngIf=" showContentPw == 'show' ">
       <ion-label stacked>您的钱包文件已加密，请输入密码：</ion-label>
       <ion-input type="password" [(ngModel)]="walletPassword" (input)="onFilePassChange()" (porpertychange)="onFilePassChange()"></ion-input>
     </ion-item>
 
-    <div style="margin-top: 10px" *ngIf="unlock == 'show' ">
+    <div style="margin-top: 10px" *ngIf=" unlock == 'show' ">
       <button ion-button color="secondary" outline block (click)="decryptWallet()">解密</button>
-    </div>
+    </div>-->
   </div>
 
   <!-- 钱包解密成功后 账户信息展示模块 -->
@@ -28,59 +44,71 @@
 
       <!-- 地址资产模块 -->
       <div class="walletAddressBox">
-        <!-- 账户地址模块 -->
-        <div class="myAddressBox marginBot20">
-          <div class="form-group">
-            <h4 class="control-label">My Address </h4>
-          </div>
-          <div>
-            <div class="form-group col-lg-8 col-md-8 col-sm-8">
-              <span id="walletAddress" class="accountsAddress">{{accountsAddress}}</span>
-              <ion-badge color="secondary" id="copyAccountsAddress">Copy Address</ion-badge>
-            </div>
-          </div>
-        </div>
 
-        <!-- 资产模块 -->
-        <div class="myAssetBox" *ngIf=" myAssetBox == 'show'">
-          <div class="form-group">
-            <h4 class="control-label">My Asset </h4>
-          </div>
-          <div>
-            <div class="form-group col-lg-8 col-md-8 col-sm-8">
-              <label>可用：</label><span class="balanceViewFormatAvaliable">{{balanceViewFormatAvaliable}}</span><span class="AssetNameAvaliable marginL20">{{AssetNameAvaliable}}</span>
+          <!-- 资产模块 -->
+          <div class="myAssetBox" *ngIf=" myAssetBox == 'show'">
+
+            <div class="myAssetNum">
+              <div class="balanceViewFormatAvaliable">{{balanceViewFormatAvaliable}}</div>
+              <div class="accountShowTitle">Total Assets</div>
+              <ion-badge color="secondary">{{AssetNameAvaliable}}</ion-badge>
             </div>
-            <div class="form-group col-lg-8 col-md-8 col-sm-8 myAssetLockBox" *ngIf="myAssetLockBox == 'show'">
-              <label>锁仓：</label><span class="balanceViewFormatLock">{{balanceViewFormatLock}}</span><span class="AssetNameLock marginL20">{{AssetNameLock}}</span>
+            <div class="myAssetNum">
+              <div class="balanceViewFormatAvaliable">{{balanceViewFormatLock}}</div>
+              <div class="accountShowTitle">Lock Assets</div>
+              <ion-badge color="secondary">{{AssetNameLock}}</ion-badge>
             </div>
           </div>
-        </div>
+
+          <!-- 账户地址模块 -->
+          <div class="myAddressBox marginBot20">
+            <div class="myAssetNum">
+              <div class="accountsAddress" id="walletAddress">{{accountsAddress}}</div>
+              <div class="accountShowTitle">My Address</div>
+            </div>
+          </div>
 
       </div>
 
-      <!-- 转账模块 -->
-      <div class="transferAccountsBox">
-        <h2>Transfer accounts </h2>
-        <!-- 对方地址 -->
-        <div class="toAddressBox marginBot20">
-          <ion-item>
-            <ion-label >To Address</ion-label>
-            <ion-input type="text" id="toAddressInput" placeholder="address" [(ngModel)]="receiverAddress"></ion-input>
-          </ion-item>
-        </div>
-        <!-- 发送数量 -->
-        <div class="transferAmountBox marginBot20">
-          <ion-item>
-            <ion-label >Amount to Send</ion-label>
-            <ion-input type="number" placeholder="amount" [(ngModel)]="receiverAmount" id="transferAmountInput"></ion-input>
-          </ion-item>
-        </div>
+    </div>
 
-        <div class="transferAccountsBtnBox">
-          <button ion-button (click)="openTransferModal()">Send</button>
-        </div>
-      </div>
+    <button ion-button block (click)="showTransferModule()">转账</button>
+  </div>
+
+</ion-content>
+
+<!-- 转账模块 -->
+<div class="transferAccountsBox" *ngIf=" transferAccountModal == 'show'">
+  <ion-header>
+    <ion-navbar>
+      <ion-title>
+        Transfer
+      </ion-title>
+    </ion-navbar>
+  </ion-header>
+  <div (click)="transferGoBack()" class="transferGoBackBtn"><ion-icon ios="ios-arrow-back" md="md-arrow-back" ></ion-icon></div>
+
+  <!-- 对方地址 -->
+  <div class="toTransferInputBox">
+    <div class="toAddressBox">
+      <ion-item>
+        <ion-label floating>To Address</ion-label>
+        <ion-input type="text" id="toAddressInput" placeholder="" [(ngModel)]="receiverAddress"></ion-input>
+      </ion-item>
+    </div>
+    <!-- 发送数量 -->
+    <div class="transferAmountBox marginBot20">
+      <ion-item>
+        <ion-label floating>Amount to Send</ion-label>
+        <ion-input type="number" placeholder="" [(ngModel)]="receiverAmount" id="transferAmountInput"></ion-input>
+      </ion-item>
     </div>
   </div>
-</ion-content>
+
+
+  <div class="transferAccountsBtnBox">
+    <button ion-button block (click)="openTransferModal()">Send</button>
+  </div>
+</div>
+
 

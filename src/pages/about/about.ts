@@ -8,13 +8,18 @@ import { Component } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { ToastController } from 'ionic-angular';
 import { LoadingController } from "ionic-angular";
-/*import { FileChooser } from "@ionic-native/file-chooser";
-import { SQLite,SQLiteObject } from '@ionic-native/sqlite';*/
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { ModalController } from 'ionic-angular';
-import { ContactPage } from '../contact/contact';
-import { App} from "ionic-angular";
+import { TransferConfirmModalPage} from "../transfer-confirm-modal/transfer-confirm-modal";
+import { App } from "ionic-angular";
+import { Device } from '@ionic-native/device';
+import { NavController} from "ionic-angular";
+
+/*import { FileChooser } from "@ionic-native/file-chooser";
+import { SQLite,SQLiteObject } from '@ionic-native/sqlite';*/
+/*import { IOSFilePicker } from '@ionic-native/file-picker';
+import { File } from '@ionic-native/file';*/
 
 @Component({
   selector: 'page-about',
@@ -24,13 +29,22 @@ import { App} from "ionic-angular";
 @Injectable()
 
 export class AboutPage {
-  constructor(private http:HttpClient,public toastCtrl: ToastController,public loadingCtrl: LoadingController,public modalCtrl: ModalController,public appCtrl: App   /*,private fileChooser: FileChooser,private sqlite: SQLite*/) {
+  constructor(private http:HttpClient,public toastCtrl: ToastController,public loadingCtrl: LoadingController,public modalCtrl: ModalController,public appCtrl: App,private device: Device,public navCtrl: NavController/*private filePicker: IOSFilePicker,private file: File*/   /*,private fileChooser: FileChooser,private sqlite: SQLite*/) {
+      this.Device = this.device.platform;
+      let version = this.device.version;
+      console.log(this.Device);
+      console.log(version);
+      /*var info = "操作系统："+this.Device + "  版本："+version;*/
+     /* this.walletToast(info);*/
 
   }
+  Device:any;
 
   openWalletContainer = 'show'; //打开钱包模块
   WalletMainInfoBox = 'hide'; //转账信息模块
   showContentPw = 'hide'; //输入钱包密码模块
+  unlock = 'hide'; //解密按钮
+  transferAccountModal:any = 'hide'; //转账模块
 
   loading:any; //loading加载
   filePassword:any; //钱包密码
@@ -71,7 +85,7 @@ export class AboutPage {
 
   ionViewDidLoad(){
     var that = this;
-    that.http.get('../../assets/conf/wallet-conf.json').subscribe(dataObject =>{
+    this.http.get('assets/conf/wallet-conf.json').subscribe(dataObject =>{
       console.log(dataObject);
       let data:any = dataObject;
 
@@ -113,8 +127,31 @@ export class AboutPage {
 
   }
 
+  showTransferModule(){
+    this.WalletMainInfoBox = 'hide';
+    this.transferAccountModal = 'show';
+  }
+
   openFileDialog(){
     $("#updateFile").trigger("click");
+
+    /*var that = this;
+    if(this.Device == 'Android'){
+      that.walletToast("111");
+      $("#updateFile").trigger("click");
+    }else{
+      console.log(this.file.tempDirectory)
+      console.log(this.file.syncedDataDirectory)
+      console.log(this.file.documentsDirectory)
+
+      this.filePicker.pickFile()
+        .then(url =>{
+          console.log(url);
+          that.walletToast(url);
+        })
+        .catch(err => console.log('Error', err));
+    }*/
+
    /* this.fileChooser.open().then(url =>{
       console.log(url);
       this.walletDbFile = url;
@@ -161,13 +198,20 @@ export class AboutPage {
 
     var file = (onChangeEvent.srcElement || onChangeEvent.target).files[0];
 
+    console.log(file);
+    /*var verifyFile = file.name.indexOf(".db");
+
+    if( verifyFile == '-1'){
+      that.walletToast("您导入的钱包文件格式错误");
+      return false;
+    }*/
+
     var reader = new FileReader();
 
     that.loading = this.loadingCtrl.create({
       content: 'Please wait...',
       spinner: 'ios'
     });
-
 
     if(typeof FileReader==="undefined"){
       console.log("不支持FileReader");
@@ -196,7 +240,7 @@ export class AboutPage {
         catch(e){
           that.walletLoading('hide');
           that.walletToast(e.message);
-          return;
+          return false;
         }
 
         var passwordHash = new Uint8Array(32);
@@ -312,9 +356,13 @@ export class AboutPage {
       return;
     }
 
+    this.openWalletContainer = 'show';
+    this.WalletMainInfoBox = 'hide';
+    this.showContentPw = 'hide';
+    this.unlock = 'hide';
+    this.transferAccountModal = 'hide';
 
-
-    this.appCtrl.getRootNav().push(ContactPage,{
+    this.appCtrl.getRootNav().push(TransferConfirmModalPage,{
       toAddress:that.receiverAddress,
       assetAmount:that.receiverAmount,
       assetName:that.walletApp.coins[0].AssetName.toLocaleUpperCase(),
@@ -615,18 +663,6 @@ export class AboutPage {
     return this.ab2hexstring(data);
   }
 
-  toTransferCoins(){
-    this.walletApp.txModify = false;
-    if (!this.walletApp.txModify) {
-      if (this.walletApp.walletType == 'externalsignature') {
-        /*this.MakeTxAndSend(this.walletApp.txData);*/
-      } else {
-        console.log("签名并发送");
-        console.log(this.txData);
-        this.SignTxAndSend(this.txData);
-      }
-    }
-  }
 
   SignTxAndSend($txData) {
     var publicKeyEncoded = this.walletApp.accounts[this.walletApp.accountSelectIndex].publickeyEncoded;
@@ -701,6 +737,11 @@ export class AboutPage {
       1000);
 
   };
+
+  transferGoBack(){
+     this.transferAccountModal = 'hide';
+     this.WalletMainInfoBox = 'show';
+  }
 
 
 }
