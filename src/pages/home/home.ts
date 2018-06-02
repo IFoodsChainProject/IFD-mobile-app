@@ -104,6 +104,9 @@ export class HomePage {
       },2000)
     }
 
+    /*方便测试页面，随时删除*/
+    that.connectBle = 'yes';
+
   }
 
   scanBleDevice(){

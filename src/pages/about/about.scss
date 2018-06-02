@@ -18,8 +18,7 @@ page-about {
   #sendTransaction>div{
     font-size: 14px;
     line-height: 24px;
-    margin-bottom: 20px;
-    padding: 20px 10px;
+    padding: 16px;
   }
   #copyAccountsAddress{
     float: right;
@@ -220,9 +219,53 @@ page-about {
   .myAssetNum{
     line-height: 2.6rem;
     font-size: 1.6rem;
-    text-align: center;
-    margin: 3rem 0;
+    margin: 1.4rem 0;
     position: relative;
+    border-radius: 10px;
+    border:1px solid #ddd;
+    color: #4a4a4a;
+    padding:1rem 1.5rem .3rem 5rem;
+    background-repeat: no-repeat;
+    background-position: left .6rem top 2.4rem;
+    background-size: 3.2rem auto;
+  }
+  .myAssetNum:first-child{
+    margin-top: 0;
+  }
+  .avaliableAsset{
+    background-image: url("../assets/imgs/assetAvaliable.svg");
+  }
+  .lockAsset{
+    background-image: url("../assets/imgs/lock.svg");
+  }
+  .myAssetAddress{
+    background-image: url("../assets/imgs/Account.svg");
+  }
+  .myAssetNum>div{
+    height: 3.4rem;
+    line-height: 3.4rem;
+  }
+  .myAssetNum>div span{
+    float:left;
+    color:#999;
+    font-size: 1.4rem;
+    width: 8rem;
+  }
+  .myAssetNum .dataShow{
+    width: calc(100% - 8rem);
+    text-align: right;
+    color: #4a4a4a;
+    font-size: 1.6rem;
+  }
+  .myAssetNum>div::after{
+    display: block;
+    content: "";
+    clear: both;
+  }
+  .myAssetNum .assetBoxTitle{
+    font-size: 2rem;
+    line-height: 3rem;
+    border-bottom: 1px solid #ddd;
   }
   .myAssetNum .balanceViewFormatAvaliable{
     font-size: 2.4rem;
@@ -235,7 +278,7 @@ page-about {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 0 3rem;
+    font-size: 1rem;
   }
   .accountShowTitle{
     color: #4a4a4a;
@@ -262,7 +305,7 @@ page-about {
     padding-top: 57px;
   }
   .toTransferInputBox{
-    background-color: #488aff;
+    border:1px solid #488aff;
     border-radius: 10px;
     width: 90vw;
     margin: 2rem auto;
@@ -270,11 +313,11 @@ page-about {
     padding: 10px 16px 10px 0;
   }
   .toTransferInputBox .item{
-    color: #fff;
-    background-color: #488aff;
+    color: #4a4a4a;
+    background-color: transparent;
   }
   .toTransferInputBox .label,.toTransferInputBox .input{
-    color: #fff;
+    color: #4a4a4a;
   }
 
   .toTransferInputBox .item-input-has-focus .label-md[floating],.toTransferInputBox .input-has-focus .label-md[floating]{
@@ -285,7 +328,7 @@ page-about {
     box-shadow: none;
   }
   .toTransferInputBox .item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner,.toTransferInputBox .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner{
-    border-bottom-color: #4dd090;
+    border-bottom-color: #488aff;
     box-shadow: none;
   }
 

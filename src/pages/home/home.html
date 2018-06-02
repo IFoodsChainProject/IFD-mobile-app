@@ -42,21 +42,25 @@
   <div *ngIf=" connectBle == 'yes' ">
     <div class="meatTitle">您所检测的肉类品质优良概率为：</div>
     <div class="r_out">
-      <div class="r_in">
-        <div class="r_c c3"></div>
-        <div class="r_num">{{meatQuality}}</div>
-      </div>
+        <div class="r_in">
+          <div class="r_c c3"></div>
+          <div class="r_num">{{meatQuality}}</div>
+        </div>
     </div>
 
     <div class="transferDataShow">
-      <div class="dataItemBox">
-        <div class="dataItemBoxValue electric">{{electric}}</div>
-        <div class="dataItemBoxType">导电度</div>
-      </div>
-      <div class="dataItemBox">
-        <div class="dataItemBoxValue ph">{{ph}}</div>
-        <div class="dataItemBoxType">酸碱度</div>
-      </div>
+        <div class="dataItemBox">
+          <div class="dataItemBoxValue electric">{{electric}}</div>
+          <div class="dataItemBoxType">导电度</div>
+        </div>
+        <div class="dataItemBox">
+          <div class="dataItemBoxValue ph">{{ph}}</div>
+          <div class="dataItemBoxType">酸碱度</div>
+        </div>
+    </div>
+
+    <div>
+      <button ion-button block clear (click)="updateListenData()">上传数据</button>
     </div>
 
   </div>

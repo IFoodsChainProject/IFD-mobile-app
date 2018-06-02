@@ -45,26 +45,25 @@
       <!-- 地址资产模块 -->
       <div class="walletAddressBox">
 
-          <!-- 资产模块 -->
-          <div class="myAssetBox" *ngIf=" myAssetBox == 'show'">
-
-            <div class="myAssetNum">
-              <div class="balanceViewFormatAvaliable">{{balanceViewFormatAvaliable}}</div>
-              <div class="accountShowTitle">Total Assets</div>
-              <ion-badge color="secondary">{{AssetNameAvaliable}}</ion-badge>
-            </div>
-            <div class="myAssetNum">
-              <div class="balanceViewFormatAvaliable">{{balanceViewFormatLock}}</div>
-              <div class="accountShowTitle">Lock Assets</div>
-              <ion-badge color="secondary">{{AssetNameLock}}</ion-badge>
+          <!-- 账户地址模块 -->
+          <div class="myAddressBox">
+            <div class="myAssetNum myAssetAddress">
+              <div class="assetBoxTitle">我的地址</div>
+              <div class="accountsAddress" id="walletAddress">{{accountsAddress}}</div>
             </div>
           </div>
 
-          <!-- 账户地址模块 -->
-          <div class="myAddressBox marginBot20">
-            <div class="myAssetNum">
-              <div class="accountsAddress" id="walletAddress">{{accountsAddress}}</div>
-              <div class="accountShowTitle">My Address</div>
+          <!-- 资产模块 -->
+          <div class="myAssetBox" *ngIf=" myAssetBox == 'show'">
+            <div class="myAssetNum avaliableAsset">
+              <div class="assetBoxTitle ">可用资产</div>
+              <div class="balanceViewFormatAvaliable"><span>Total Assets</span><span class="dataShow">{{balanceViewFormatAvaliable}}</span></div>
+              <div class="accountShowTitle"><span>Asset Name</span><span class="dataShow">{{AssetNameAvaliable}}</span></div>
+            </div>
+            <div class="myAssetNum lockAsset">
+              <div class="assetBoxTitle ">锁仓资产</div>
+              <div class="balanceViewFormatAvaliable"><span>Lock Assets</span><span class="dataShow">{{balanceViewFormatLock}}</span></div>
+              <div class="accountShowTitle"><span>Asset Name</span><span class="dataShow">{{AssetNameLock}}</span></div>
             </div>
           </div>
 

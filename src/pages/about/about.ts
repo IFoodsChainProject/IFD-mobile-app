@@ -505,7 +505,7 @@ export class AboutPage {
     var connectInfo = "节点连接成功，节点高度："+that.walletApp.nodeHeight+",节点连接时间："+that.walletApp.getNodeHeightLastTime;
     let toast = this.toastCtrl.create({
       message: connectInfo,
-      duration: 5000,
+      duration: 3000,
       position: 'bottom'
     });
     toast.present();
