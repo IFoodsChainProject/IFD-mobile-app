@@ -34,9 +34,6 @@ export class AboutPage {
       let version = this.device.version;
       console.log(this.Device);
       console.log(version);
-      /*var info = "操作系统："+this.Device + "  版本："+version;*/
-     /* this.walletToast(info);*/
-
   }
   Device:any;
 
@@ -134,77 +131,12 @@ export class AboutPage {
 
   openFileDialog(){
     $("#updateFile").trigger("click");
-
-    /*var that = this;
-    if(this.Device == 'Android'){
-      that.walletToast("111");
-      $("#updateFile").trigger("click");
-    }else{
-      console.log(this.file.tempDirectory)
-      console.log(this.file.syncedDataDirectory)
-      console.log(this.file.documentsDirectory)
-
-      this.filePicker.pickFile()
-        .then(url =>{
-          console.log(url);
-          that.walletToast(url);
-        })
-        .catch(err => console.log('Error', err));
-    }*/
-
-   /* this.fileChooser.open().then(url =>{
-      console.log(url);
-      this.walletDbFile = url;
-      let dbPathIndex = this.walletDbFile.indexOf('DNAWallet/') +10;
-
-      let dbPath = this.walletDbFile.substring(0,dbPathIndex);
-      let dbName = this.walletDbFile.substring(dbPathIndex);
-
-      console.log(dbPathIndex);
-      console.log(dbPath);
-      console.log(dbName);
-
-      this.sqlite.create({
-      name: dbName,
-      location: '2'
-    })
-      .then((db: SQLiteObject ) => {
-
-        db.executeSql('SELECT * FROM Key', [])
-          .then(data => {
-            console.log(444);
-            console.log(data);
-          })
-          .catch(e => {
-            console.log(333)
-            console.log(e)
-          });
-
-      })
-      .catch(e => {
-        console.log(222)
-        console.log(e);
-      });
-
-    }).catch(e=>{
-      console.log(111);
-      console.log(e);
-    })*/
-
   }
 
   showContentT(onChangeEvent) {
     var that = this;
 
     var file = (onChangeEvent.srcElement || onChangeEvent.target).files[0];
-
-    console.log(file);
-    /*var verifyFile = file.name.indexOf(".db");
-
-    if( verifyFile == '-1'){
-      that.walletToast("您导入的钱包文件格式错误");
-      return false;
-    }*/
 
     var reader = new FileReader();
 
@@ -214,10 +146,9 @@ export class AboutPage {
     });
 
     if(typeof FileReader==="undefined"){
-      console.log("不支持FileReader");
+        that.walletToast("您的手机不支持文件读取");
     }else {
       reader.onloadstart = function () {
-        console.log('进入loadstart');
         that.loading.present();
       }
 
@@ -227,7 +158,6 @@ export class AboutPage {
 
       reader.onload = function(onLoadEvent){
 
-        console.log("进入onload")
         var Uints = new Uint8Array(reader.result);
 
         var db:any = window;
@@ -235,11 +165,10 @@ export class AboutPage {
 
         try{
           var res = ss.exec("SELECT * FROM Key");
-          console.log(res);
         }
         catch(e){
           that.walletLoading('hide');
-          that.walletToast(e.message);
+          that.walletToast("文件格式错误，请导入正确的钱包文件");
           return false;
         }
 
@@ -607,29 +536,6 @@ export class AboutPage {
     return fmt;
   }
 
-   ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint8Array(buf));
-  }
-
-   str2ab(str) {
-    var bufView = new Uint8Array(str.length);
-    for (var i = 0,
-           strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
-    }
-    return bufView;
-  }
-
-   hexstring2ab(str) {
-    var result = [];
-    while (str.length >= 2) {
-      result.push(parseInt(str.substring(0, 2), 16));
-      str = str.substring(2, str.length);
-    }
-
-    return result;
-  }
-
    ab2hexstring(arr) {
     var result = "";
     for (let i = 0; i < arr.length; i++) {
@@ -648,95 +554,6 @@ export class AboutPage {
 
     return result;
   }
-
-   numStoreInMemory(num:any, length) {
-    if (num.length % 2 == 1) {
-      num = '0' + num;
-    }
-
-    for (let i = num.length; i < length; i++) {
-      num = '0' + num;
-    }
-
-    var data = this.reverseArray(new Buffer(num, "HEX"));
-
-    return this.ab2hexstring(data);
-  }
-
-
-  SignTxAndSend($txData) {
-    var publicKeyEncoded = this.walletApp.accounts[this.walletApp.accountSelectIndex].publickeyEncoded;
-    var privateKey = this.walletApp.accounts[this.walletApp.accountSelectIndex].privatekey;
-    var sign = Wallet.signatureData($txData, privateKey);
-    var txRawData = Wallet.AddContract($txData, sign, publicKeyEncoded);
-
-    this.sendTransactionData(txRawData,0);
-  };
-
-  sendTransactionData($txData, $transactionType) {
-    var that = this;
-    var host = that.walletApp.hostInfo[that.walletApp.hostSelectIndex];
-
-    Wallet.SendTransactionData( $txData, host, (function (res) {
-      console.log(res);
-      /* 原判断条件 res.status == 200 调试 改为 res.Desc == "SUCCESS" */
-      if (res.Desc == "SUCCESS") {
-        var txhash = that.reverseArray(that.hexstring2ab(Wallet.GetTxHash($txData.substring(0, $txData.length - 103 * 2))));
-
-        /* 原判断条件 res.data.Error == 0 调试 改为 res.Error == 0 */
-        if (res.Error == 0) {
-          /*  var successInfo = $translate.instant('NOTIFIER_TRANSACTION_SUCCESS_TXHASH'); */
-          var successInfo = "交易成功, TXID:";
-
-          successInfo = successInfo + that.ab2hexstring(txhash);
-
-          /*walletApp.successInfoTimerVal = 60;*/ //此行暂时无任何作用
-          /*  $scope.notifier.success(successInfo); */
-          console.log(successInfo);
-          if (that.walletApp.txType === '128') {
-            that.countDown();
-          }
-
-        } else {
-          /* $scope.notifier.danger($translate.instant('NOTIFIER_FAILURE') + res.data.Error + ': ' + res.data.Desc) */
-          console.log("失败"+res.Error+':'+res.Desc);
-        }
-
-        that.walletApp.isDisplayAssetId = true;
-        that. walletApp.newAssetId = that.ab2hexstring(txhash);
-        if ($transactionType == 0) {
-          that.walletApp.registerNewAssetId = that.walletApp.newAssetId;
-        } else if ($transactionType == 1) {
-          that.walletApp.issueNewAssetId = that.walletApp.newAssetId;
-        }
-      }
-    }), (function (err) {
-      that.catchProblem(err);
-      return null;
-    }));
-
-  };
-
-  countDown = function () {
-    var that = this;
-    that.walletApp.waitingSecond = true;
-    that.walletApp.countdown = 10;
-    that.walletApp.Transaction.ToAddress = '';
-    that.walletApp.Transaction.Amount = '';
-    that.walletApp.Transaction.able = false;
-    var myTime = setInterval(function () {
-        that.walletApp.countdown--;
-        if (that.walletApp.countdown == 0) {
-          that.walletApp.Transaction.able = true;
-          that.walletApp.waitingSecond = false;
-          clearInterval(myTime);
-        }
-
-        /*  $scope.$digest(); */
-      },
-      1000);
-
-  };
 
   transferGoBack(){
      this.transferAccountModal = 'hide';
