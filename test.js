@@ -5,3 +5,7 @@ var test = function(){
 var test3 = function(){
 	alert('test3');
 }
+
+var test4 = function(){
+	alert('test4');
+}
