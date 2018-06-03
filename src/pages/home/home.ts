@@ -118,11 +118,8 @@ export class HomePage {
             that.connectBle = 'yes';
             that.isConnect = true;
 
-            that.httpRandomNode();
-
             that.bluetoothSerial.subscribeRawData().subscribe(
               dataBuffer=>{
-                console.log("收到数据")
                 console.log(dataBuffer);
                 let newBuffer = String.fromCharCode.apply(null, new Uint8Array(dataBuffer))
                 that.ph = newBuffer;

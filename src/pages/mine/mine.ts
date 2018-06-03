@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { AboutPage } from "../about/about";
+import { WalletlistPage} from "../walletlist/walletlist";
 
 /**
  * Generated class for the MinePage page.
@@ -23,8 +24,12 @@ export class MinePage {
     console.log('ionViewDidLoad MinePage');
   }
 
-  toWalletPage(){
+  toImportWallet(){
     this.navCtrl.push(AboutPage);
+  }
+
+  toManageWallet(){
+    this.navCtrl.push(WalletlistPage);
   }
 
 }

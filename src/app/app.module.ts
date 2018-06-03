@@ -8,8 +8,9 @@ import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
-import { MinePage } from "../pages/mine/mine";
 import { TransferConfirmModalPage } from '../pages/transfer-confirm-modal/transfer-confirm-modal';
+import { MinePage } from "../pages/mine/mine";
+import { WalletlistPage } from "../pages/walletlist/walletlist";
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -29,7 +30,8 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
     HomePage,
     TabsPage,
     TransferConfirmModalPage,
-    MinePage
+    MinePage,
+    WalletlistPage
   ],
   imports: [
     BrowserModule,
@@ -49,7 +51,8 @@ import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
     HomePage,
     TabsPage,
     TransferConfirmModalPage,
-    MinePage
+    MinePage,
+    WalletlistPage
   ],
   providers: [
     StatusBar,
