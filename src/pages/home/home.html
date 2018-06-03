@@ -39,7 +39,7 @@
 
   </div>
 
-  <div *ngIf=" connectBle == 'yes' ">
+  <div *ngIf=" connectBle == 'yes' " [ngClass]="{hasConnetcPaddingTop:isConnect}">
     <div class="meatTitle">您所检测的肉类品质优良概率为：</div>
     <div class="r_out">
         <div class="r_in">
@@ -60,7 +60,7 @@
     </div>
 
     <div>
-      <button ion-button block clear (click)="updateListenData()">上传数据</button>
+      <button ion-button block  (click)="updateListenData()" class="updataListenDataBtn">上传数据</button>
     </div>
 
   </div>

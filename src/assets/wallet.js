@@ -130,10 +130,10 @@ WalletMath.hexToNumToStr = function(arg) {
   return new Decimal("0x" + arg).toString();
 };
 WalletMath.toThousands = function (num) {
-  let numStart = '';
-  let numEnd = '';
-  let result = '';
-  let dotLocal = num.indexOf(".");
+  var numStart = '';
+  var numEnd = '';
+  var result = '';
+  var dotLocal = num.indexOf(".");
 
   if (dotLocal === -1) {
     numStart = num;
@@ -311,9 +311,9 @@ Wallet.GetTxHash = function($data) {
  * @constructor
  */
 Wallet.InputDataLength = function(orderNum) {
-  let firstVal = orderNum + 1;
-  let len = 0;
-  let inputNum = orderNum + 1;
+  var firstVal = orderNum + 1;
+  var len = 0;
+  var inputNum = orderNum + 1;
 
   if (orderNum < 253) { // 0xFD
     len = 1;
@@ -341,9 +341,9 @@ Wallet.InputDataLength = function(orderNum) {
 
 Wallet.GetInputData = function($coin, $amount) {
   // sort
-  let coin_ordered = []
-  let nodeHeight = $coin['nodeHeight']
-  for(let tmpCoinI = 0; tmpCoinI < $coin['Utxo'].length; tmpCoinI ++) {
+  var coin_ordered = []
+  var nodeHeight = $coin['nodeHeight']
+  for(var tmpCoinI = 0; tmpCoinI < $coin['Utxo'].length; tmpCoinI ++) {
     if($coin['Utxo'][tmpCoinI]['LockTime'] <= nodeHeight) {
 	    coin_ordered.push($coin['Utxo'][tmpCoinI])
     }
@@ -352,7 +352,7 @@ Wallet.GetInputData = function($coin, $amount) {
   for (i = 0; i < coin_ordered.length - 1; i++) {
     for (j = 0; j < coin_ordered.length - 1 - i; j++) {
       if (WalletMath.lt(coin_ordered[j].Value, coin_ordered[j + 1].Value)) {
-        let temp = coin_ordered[j];
+        var temp = coin_ordered[j];
         coin_ordered[j] = coin_ordered[j + 1];
         coin_ordered[j + 1] = temp;
       }
@@ -1261,7 +1261,7 @@ Wallet.analyzeCoins = function(res, nodeHeight) {
       var coins = [];
       var tmpIndexArr = [];
 
-      for (let i = 0; i < results.length; i++) {
+      for (var i = 0; i < results.length; i++) {
         coins[i] = results[i];
         coins[i].nodeHeight = nodeHeight;
         coins[i].balance = 0;
@@ -1430,6 +1430,29 @@ Wallet.SendTransactionData = function($txData, $host, $callback, $callbackDev) {
   })
 
 };
+
+/**
+  send common data by record transaction
+*/
+Wallet.SendRcdTransactionData = function($rcdTxData, $host, $callback, $callbackDev) {
+
+  $.ajax({
+    url: $host.restapi_host + ':' + $host.restapi_port + '/api/v1/custom/transaction/record',
+    type:'post',
+    data: '{"Action":"sendrecord", "Version":"1.0.0", "Type":"","RecordData":{"content":'+ $rcdTxData + '}}',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    success:function (data) {
+      $callback(data);
+    },
+    error:function (error) {
+      $callbackDev(error);
+    }
+  })
+}
+
+
 
 Wallet.AjaxGet = function (url, $callback, $catch) {
   // $http({method: 'GET', url: url}).then($callback).catch($catch);

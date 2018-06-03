@@ -161,10 +161,10 @@ export class AboutPage {
         var Uints = new Uint8Array(reader.result);
 
         var db:any = window;
-        var ss = new db.SQL.Database(Uints)
+        var newDb = new db.SQL.Database(Uints)
 
         try{
-          var res = ss.exec("SELECT * FROM Key");
+          var res = newDb.exec("SELECT * FROM Key");
         }
         catch(e){
           that.walletLoading('hide');
@@ -185,7 +185,7 @@ export class AboutPage {
           }
         }
 
-        res = ss.exec("SELECT * FROM Account");
+        res = newDb.exec("SELECT * FROM Account");
         var publicKeyHash = [];
         var privateKeyEncrypted = [];
         for (var x = 0; x < res[0].values.length; x++) {

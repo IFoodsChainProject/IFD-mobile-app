@@ -6,6 +6,7 @@ import { LoadingController } from "ionic-angular";
 import { BluetoothSerial } from '@ionic-native/bluetooth-serial';
 import { Device } from '@ionic-native/device';
 import { ChangeDetectorRef } from '@angular/core';
+import { HttpClient } from "@angular/common/http";
 
 declare var $:any;
 
@@ -16,7 +17,7 @@ declare var $:any;
 
 export class HomePage {
 
-  constructor(public navCtrl: NavController,private ble: BLE,public toastCtrl: ToastController,public loadingCtrl: LoadingController,private bluetoothSerial: BluetoothSerial,private device: Device,public cd: ChangeDetectorRef) {
+  constructor(public navCtrl: NavController,private ble: BLE,public toastCtrl: ToastController,public loadingCtrl: LoadingController,private bluetoothSerial: BluetoothSerial,private device: Device,public cd: ChangeDetectorRef,private http:HttpClient) {
       this.deviceSys = this.device.platform;
       console.log(this.deviceSys);
       this.ble.isEnabled().then(res=>{
@@ -30,53 +31,28 @@ export class HomePage {
 
   deviceSys:any;
   bluetoothEnable:any = false; //蓝牙是否启用
-  electric:number = 0; //导电度申明
+  electric:any = '0'; //导电度申明
   ph:any = '0'; //ph值申明
-  meatQuality:any = '50%'; // 肉质测试数据
+  meatQuality:any = "0%"; // 肉质测试数据
   connectBle:any = 'no'; //判断是否连接蓝牙
   loading:any; //页面加载loading
+  walletApp:any = {};
+  isConnect:boolean = false;
 
-  devices:any = []; /*=[
-    {
-      'name': 'demo1',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -37
-    },
-    {
-      'name': 'demo2',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -44
-    },
-    {
-      'name': 'demo3333',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -88
-    },
-    {
-      'name': 'demo3333',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -88
-    },
-    {
-      'name': 'demo3333',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -88
-    },
-    {
-      'name': 'demo3333',
-      'id': '00:1A:7D:DA:71:13',
-      'advertising': ArrayBuffer,
-      'rssi': -88
-    }
-  ]*/
+  devices:any = [];
+
+  testWalletAccount:any = {
+    address: "FFoD82FXu6FCRCr56fJUWT44M1DCx588J6",
+    privatekey: "a45058d028b55df1a725fde070c019fa5dcc39cd83bd5414e80e99d54da9112a",
+    programHash: "6d552658f94f0b60864d947db412d396c8bc4659",
+    publickeyEncoded: "03ea970a23c91f0fac8c68be6bba55488aa7d7f96901d7f891f057153bfef4b2a3",
+    publickeyHash: "b040de43821bee747479d36a7427e819ea19aeb3"
+  }
 
   ionViewDidLoad(){
     var that = this;
+
+    that.httpRandomNode();
 
     if(that.bluetoothEnable){
       that.connectBle = 'scaning';
@@ -103,10 +79,6 @@ export class HomePage {
         })
       },2000)
     }
-
-    /*方便测试页面，随时删除*/
-    that.connectBle = 'yes';
-
   }
 
   scanBleDevice(){
@@ -131,7 +103,7 @@ export class HomePage {
       var that = this;
       that.ble.stopScan().then(function (stopScandata) {
         console.log("停止扫描成功");
-        console.log(stopScandata);
+
         that.homeLoading('show');
         that.bluetoothSerial.connect(bleId).subscribe(
           connectBleId =>{
@@ -144,26 +116,19 @@ export class HomePage {
             }
 
             that.connectBle = 'yes';
+            that.isConnect = true;
 
+            that.httpRandomNode();
 
             that.bluetoothSerial.subscribeRawData().subscribe(
               dataBuffer=>{
                 console.log("收到数据")
                 console.log(dataBuffer);
                 let newBuffer = String.fromCharCode.apply(null, new Uint8Array(dataBuffer))
-                console.log(newBuffer);
+                that.ph = newBuffer;
+                that.cd.detectChanges();
+                that.listenCheckDataRefresh();
 
-                $(".r_c").animate({
-                  height: "50%"
-                },1000);
-
-                that.bluetoothSerial.read().then(reciveData=>{
-                  console.log("ph值："+reciveData);
-                  that.ph = reciveData;
-                  that.cd.detectChanges();
-                }).catch(error=>{
-                  that.homeToastTop('ph读取失败');
-                })
               },error=>{
                 console.log("串行数据未收到");
               }
@@ -173,6 +138,8 @@ export class HomePage {
             console.log(error);
             that.homeLoading('hide');
             that.homeToastTop('连接失败请重试');
+            that.connectBle = 'scaning';
+            that.isConnect = false;
           }
         )
       },function (error) {
@@ -229,6 +196,89 @@ export class HomePage {
     }else if(res == 'hide'){
       this.loading.dismiss();
     }
+  }
+
+  httpRandomNode(){
+    var that = this;
+    this.http.get('assets/conf/wallet-conf.json').subscribe(dataObject =>{
+      console.log(dataObject);
+      let data:any = dataObject;
+
+      that.walletApp.hostInfo = data.host_info[0];
+
+      that.walletApp.hostSelectIndex = Math.floor(Math.random() * (that.walletApp.hostInfo.length));
+
+    },eror=>{
+      that.homeToastTop(eror);
+    })
+  }
+
+  listenCheckDataRefresh(){
+    this.meatQuality= parseFloat((Math.random()*(98-80)+80).toFixed(1)) + "%";
+    this.electric = parseFloat((Math.random()*(13-1)+0.7).toFixed(1));
+
+    $(".r_c").animate({
+      height: this.meatQuality
+    },500);
+  }
+
+  updateListenData(){
+     let currentData:any ={};
+     currentData["ver"] = '0.1';
+     currentData["ph"] = this.ph;
+     currentData["eCond"] = this.electric;
+     currentData["res"] = this.meatQuality;
+
+     this.homeLoading('show');
+     this.SignRcdTxAndSend(currentData);
+  }
+
+  SignRcdTxAndSend(rcdData) {
+    var that = this;
+    var fromAddress = that.testWalletAccount.address;
+    var privateKey = that.testWalletAccount.privatekey;
+    var signOfrcdData = Wallet.signatureData(rcdData, privateKey);
+
+    console.log("send record tx with signature from address..." + rcdData, privateKey, signOfrcdData, fromAddress);
+
+    //应该还是要序列化，否则json的字符要多占空间
+    //construct the record transaction data
+    var jsonObj = {data:rcdData, fromAddress:fromAddress, signature:signOfrcdData};
+    var jsonStr = JSON.stringify(jsonObj);
+
+    that.sendRcdTransactionData(jsonStr);
+  };
+
+  sendRcdTransactionData($rcdTxData) {
+    var that = this;
+    var host = that.walletApp.hostInfo[that.walletApp.hostSelectIndex];
+
+    Wallet.SendRcdTransactionData($rcdTxData, host, (function (res) {
+      console.log(res);
+      that.homeLoading("hide");
+
+      if (res.Desc == "SUCCESS") {
+        //var txhash = ab2hexstring(reverseArray(hexstring2ab(Wallet.GetTxHash($rcdTxData))));
+        var errCode = res.Error;
+        if(errCode == 0) {
+          console.log("sendRcdTx success! tx hash is " + res.Result);
+          that.homeToastTop("数据上传成功");
+        } else {
+          console.log("sendRcdTx failed! error code is " + errCode);
+          that.homeToastTop("数据上传失败");
+        }
+      }else{
+        that.homeToastTop("数据上传失败");
+      }
+    }), (function (err) {
+      that.homeToastTop(err);
+      return null;
+    }));
+
+  };
+
+  WalletSendRcdTransactionData(){
+
   }
 
 }
